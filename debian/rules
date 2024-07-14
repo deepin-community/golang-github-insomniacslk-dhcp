@@ -1,4 +1,12 @@
 #!/usr/bin/make -f
 
+# async needs github.com/fanliao/go-promise
+export DH_GOLANG_EXCLUDES := examples async
+
 %:
-	dh $@
+	dh $@ --builddirectory=_build --buildsystem=golang --with=golang
+
+execute_after_dh_auto_configure:
+	# following tests need github.com/hugelgupf/socketpair which is not packaged.
+	rm -vf $(addprefix _build/src/github.com/insomniacslk/dhcp/,\
+		dhcpv4/nclient4/lease_test.go dhcpv4/nclient4/client_test.go dhcpv6/nclient6/client_test.go)
